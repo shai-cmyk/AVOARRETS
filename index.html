@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Avosarrets – Gérez vos arrêts-maladie et faites face à l'absentéisme</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0071CE;
+      --blue-dark: #005BAB;
+      --green: #1EC997;
+      --dark: #1B1D2A;
+      --text: #374151;
+      --muted: #6B7280;
+      --border: #E5E7EB;
+      --light: #F9FAFB;
+      --white: #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--dark);
+      background: var(--white);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ─── NAV ─── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      height: 64px;
+      display: flex;
+      align-items: center;
+    }
+    .nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+    .nav-logo img { height: 22px; }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      transition: color .15s;
+    }
+    .nav-links a:hover { color: var(--blue); }
+    .nav-links .btn-nav {
+      background: var(--blue);
+      color: var(--white);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background .15s;
+    }
+    .nav-links .btn-nav:hover { background: var(--blue-dark); color: var(--white); }
+
+    /* ─── HERO ─── */
+    .hero {
+      padding: 120px 0 80px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 52px;
+      font-weight: 800;
+      line-height: 1.15;
+      color: var(--dark);
+      max-width: 780px;
+      margin: 0 auto 20px;
+      letter-spacing: -0.5px;
+    }
+    .hero-sub {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto 36px;
+      line-height: 1.7;
+    }
+    .hero-checks {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+    .hero-check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .hero-check img { width: 18px; height: 18px; }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--blue);
+      color: var(--white);
+      font-size: 15px;
+      font-weight: 600;
+      padding: 14px 28px;
+      border-radius: 10px;
+      transition: background .15s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary:hover { background: var(--blue-dark); }
+    .btn-primary img { width: 18px; height: 18px; filter: brightness(10); }
+
+    /* ─── SECTIONS ─── */
+    .section { padding: 80px 0; }
+    .section-light { background: var(--light); }
+    .section-title {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--dark);
+      text-align: center;
+      margin-bottom: 12px;
+      letter-spacing: -0.3px;
+    }
+    .section-sub {
+      font-size: 16px;
+      color: var(--muted);
+      text-align: center;
+      max-width: 520px;
+      margin: 0 auto 56px;
+    }
+
+    /* ─── COMMENT ÇA MARCHE ─── */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .step-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .section-light .step-card { background: var(--white); }
+    .step-icon {
+      width: 56px;
+      height: 56px;
+      margin-bottom: 20px;
+    }
+    .step-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 10px;
+      line-height: 1.35;
+    }
+    .step-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.65;
+      flex: 1;
+    }
+    .step-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--blue);
+      margin-top: 20px;
+    }
+    .step-link img { width: 14px; height: 14px; }
+
+    /* ─── SERVICES ─── */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .service-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      transition: box-shadow .2s, transform .2s;
+    }
+    .service-card:hover {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+    }
+    .service-num {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--blue);
+      background: #EEF6FF;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+      display: inline-block;
+    }
+    .service-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .service-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ─── FEATURE SCREEN ─── */
+    .feature-section {
+      background: var(--dark);
+      padding: 80px 0;
+      color: var(--white);
+    }
+    .feature-section .section-title { color: var(--white); }
+    .feature-section .section-sub { color: rgba(255,255,255,0.6); }
+    .feature-screen-img {
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.4);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .feature-bullets {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 48px;
+    }
+    .feature-bullet {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .feature-bullet-icon {
+      width: 20px;
+      height: 20px;
+      background: var(--green);
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .feature-bullet-icon::after {
+      content: '';
+      display: block;
+      width: 6px;
+      height: 4px;
+      border-left: 2px solid white;
+      border-bottom: 2px solid white;
+      transform: rotate(-45deg) translateY(-1px);
+    }
+    .feature-bullet-text {
+      font-size: 14px;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.6;
+    }
+    .feature-bullet-text strong { color: var(--white); font-weight: 600; }
+
+    /* ─── PRICING ─── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .plan-card {
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px;
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+    }
+    .plan-card.featured {
+      border-color: var(--blue);
+      background: var(--dark);
+      color: var(--white);
+      position: relative;
+    }
+    .plan-badge {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--blue);
+      color: var(--white);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 16px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .plan-name {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .plan-tagline {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+    .plan-card.featured .plan-tagline { color: rgba(255,255,255,0.55); }
+    .plan-price {
+      font-size: 40px;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 4px;
+    }
+    .plan-card.featured .plan-price { color: var(--white); }
+    .plan-period {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+    .plan-card.featured .plan-period { color: rgba(255,255,255,0.45); }
+    .plan-divider {
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 24px;
+    }
+    .plan-card.featured .plan-divider { background: rgba(255,255,255,0.12); }
+    .plan-features { list-style: none; flex: 1; margin-bottom: 28px; }
+    .plan-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    .plan-card.featured .plan-features li { color: rgba(255,255,255,0.85); }
+    .plan-check {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .btn-plan {
+      display: block;
+      text-align: center;
+      padding: 13px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      transition: all .15s;
+      cursor: pointer;
+    }
+    .btn-plan-outline {
+      border: 1.5px solid var(--blue);
+      color: var(--blue);
+      background: transparent;
+    }
+    .btn-plan-outline:hover { background: var(--blue); color: var(--white); }
+    .btn-plan-solid {
+      background: var(--blue);
+      color: var(--white);
+      border: 1.5px solid var(--blue);
+    }
+    .btn-plan-solid:hover { background: var(--blue-dark); border-color: var(--blue-dark); }
+
+    /* ─── FOUNDER ─── */
+    .founder-wrap {
+      display: flex;
+      align-items: center;
+      gap: 48px;
+      max-width: 860px;
+      margin: 0 auto;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 48px;
+    }
+    .founder-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: var(--light);
+    }
+    .founder-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .founder-name {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 4px;
+    }
+    .founder-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--blue);
+      margin-bottom: 16px;
+    }
+    .founder-bio {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .founder-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .founder-tag {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: #EEF6FF;
+      color: var(--blue);
+    }
+
+    /* ─── FAQ ─── */
+    .faq-list { max-width: 760px; margin: 0 auto; }
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 8px;
+      overflow: hidden;
+      background: var(--white);
+    }
+    .faq-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      background: none;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--dark);
+      gap: 12px;
+    }
+    .faq-trigger:hover { color: var(--blue); }
+    .faq-icon {
+      font-size: 22px;
+      color: var(--muted);
+      flex-shrink: 0;
+      transition: transform .25s;
+      line-height: 1;
+    }
+    .faq-item.open .faq-icon { transform: rotate(45deg); color: var(--blue); }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .3s ease;
+    }
+    .faq-answer-inner {
+      padding: 0 24px 20px;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      padding: 56px 0 32px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+    .footer-logo { height: 20px; margin-bottom: 16px; }
+    .footer-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 280px;
+    }
+    .footer-col-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .footer-col-links { list-style: none; }
+    .footer-col-links li { margin-bottom: 10px; }
+    .footer-col-links a {
+      font-size: 14px;
+      color: var(--text);
+      transition: color .15s;
+    }
+    .footer-col-links a:hover { color: var(--blue); }
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .footer-copy { font-size: 13px; color: var(--muted); }
+    .footer-linkedin img { width: 20px; opacity: .5; transition: opacity .15s; }
+    .footer-linkedin:hover img { opacity: 1; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      .hero h1 { font-size: 36px; }
+      .steps-grid, .services-grid { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .feature-bullets { grid-template-columns: 1fr; }
+      .founder-wrap { flex-direction: column; text-align: center; padding: 32px; }
+      .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+    }
+    @media (max-width: 700px) {
+      .hero-checks { flex-direction: column; align-items: center; gap: 12px; }
+      .nav-links { display: none; }
+      .services-grid { grid-template-columns: 1fr; }
+    }
+    @media (min-width: 700px) and (max-width: 900px) {
+      .services-grid { grid-template-columns: repeat(2, 1fr); }
+      .steps-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ════════════ NAVIGATION ════════════ -->
+  <nav class="nav">
+    <div class="container">
+      <a href="#" class="nav-logo">
+        <img src="logo.svg" alt="Avosarrets" />
+      </a>
+      <div class="nav-links">
+        <a href="#pricing">Pricing</a>
+        <a href="#contact" class="btn-nav">Demander un diagnostic</a>
+        <a href="#services">Découvrez nos services</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ════════════ HERO ════════════ -->
+  <section class="hero">
+    <div class="container">
+      <h1>Votre assistant pour gérer les arrêts-maladie et faire face à l'absentéisme</h1>
+      <p class="hero-sub">
+        Avosarrets est la première solution numérique tout en un conçue par des avocats pour gérer les arrêts-maladie de plus en plus nombreux et faire face à l'absentéisme
+      </p>
+      <div class="hero-checks">
+        <div class="hero-check">
+          <img src="https://cdn.prod.website-files.com/683db8eb3b6e2b3c068f80e8/685814879cda69b64ed65b35_checkmark-svgrepo-com.svg" alt="✓" />
+          Outil de gestion fiable
+        </div>
+        <div class="hero-check">
+          <img src="https://cdn.prod.website-files.com/683db8eb3b6e2b3c068f80e8/685814879cda69b64ed65b35_checkmark-svgrepo-com.svg" alt="✓" />
+          Accompagnement
+        </div>
+        <div class="hero-check">
+          <img src="https://cdn.prod.website-files.com/683db8eb3b6e2b3c068f80e8/685814879cda69b64ed65b35_checkmark-svgrepo-com.svg" alt="✓" />
+          Réduction des conséquences de l'absentéisme
+        </div>
+      </div>
+      <a href="#contact" class="btn-primary">
+        Demander un diagnostic
+        <img src="https://cdn.prod.website-files.com/683db8eb3b6e2b3c068f80e8/683dc5380f181c93acd2b119_Chevron-right.svg" alt="→" />
+      </a>
+    </div>
+  </section>
+
+  <!-- ════════════ COMMENT ÇA MARCHE ════════════ -->
+  <section class="section section-light">
+    <div class="container">
+      <h2 class="section-title">Comment ça marche ?</h2>
+      <p class="section-sub">Un processus guidé en 3 étapes pour agir rapidement et efficacement.</p>
+      <div class="steps-grid">
+
+        <div class="step-card">
+          <img src="https://cdn.prod.website-files.com/683db8eb3b6e2b3c068f80e8/683dc27c8b9a04f4ca4c5687_Frame%201000004640.svg" alt="Étape 1" class="step-icon" />
+          <div class="step-title">Téléchargez le ou les arrêts-maladie</div>
+          <p class="step-desc">Envoyez les arrêts maladie de vos salariés et renseignez les informations demandées.</p>
+          <a href="#contact" class="step-link">
+            Demander un diagnostic
+            <img src="https://cdn.prod.website-files.com/683db8eb3b6e2b3c068f80e8/683dc5380f181c93acd2b119_Chevron-right.svg" alt="→" />
+          </a>
+        </div>
+
+        <div class="step-card">
+          <img src="https://cdn.prod.website-files.com/683db8eb3b6e2b3c068f80e8/683dc2afb1b44da873a994e8_Frame%201000004640.svg" alt="Étape 2" class="step-icon" />
+          <div class="step-title">Génèration du diagnostic personnalisé (synthèse)</div>
+          <p class="step-desc">Nous analysons les arrêts-maladie et les éléments de contexte. Nous vous proposons différentes actions.</p>
+          <a href="#contact" class="step-link">
+            Demander un diagnostic
+            <img src="https://cdn.prod.website-files.com/683db8eb3b6e2b3c068f80e8/683dc5380f181c93acd2b119_Chevron-right.svg" alt="→" />
+          </a>
+        </div>
+
+        <div class="step-card">
+          <img src="https://cdn.prod.website-files.com/683db8eb3b6e2b3c068f80e8/683dc2c995ce3ae2f354fff0_Frame%201000004640.svg" alt="Étape 3" class="step-icon" />
+          <div class="step-title">Suivez nos solutions d'accompagnement juridiques</div>
+          <p class="step-desc">Rappel de l'obligation de loyauté, Contre-visite, Certificats de complaisance, Désorganisation : on vous guide&nbsp;!</p>
+          <a href="#contact" class="step-link">
+            Demander un diagnostic
+            <img src="https://cdn.prod.website-files.com/683db8eb3b6e2b3c068f80e8/683dc5380f181c93acd2b119_Chevron-right.svg" alt="→" />
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════ SERVICES ════════════ -->
+  <section id="services" class="section">
+    <div class="container">
+      <h2 class="section-title">Découvrez nos services</h2>
+      <p class="section-sub">Des actions concrètes pour chaque situation liée aux arrêts-maladie de vos salariés.</p>
+      <div class="services-grid">
+
+        <div class="service-card">
+          <div class="service-num">01</div>
+          <div class="service-title">Organisez une contre visite médicale</div>
+          <p class="service-desc">Vous souhaitez contrôler votre salarié. Vous en avez le droit. Avosarrets vous dit comment procéder.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-num">02</div>
+          <div class="service-title">Organisez une contrevisite administrative</div>
+          <p class="service-desc">Vous souhaitez contrôler si votre salarié est à son domicile. Avosarrets vous oriente vers un CDJ.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-num">03</div>
+          <div class="service-title">Signalez à la sécurité sociale</div>
+          <p class="service-desc">Vous souhaitez signaler l'arrêt maladie de votre salarié à la CPAM. Avosarrets vous guide dans la démarche.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-num">04</div>
+          <div class="service-title">Déposez plainte contre le médecin prescripteur</div>
+          <p class="service-desc">Vous avez un doute sur la véracité de l'arrêt maladie. Avosarrets vous guide pour déposer plainte. <em>(*recours à un avocat recommandé)</em></p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-num">05</div>
+          <div class="service-title">Déposez plainte au pénal</div>
+          <p class="service-desc">Vous détectez un faux arrêt de travail. Avosarrets vous guide pour déposer plainte au pénal. <em>(*recours à un avocat recommandé)</em></p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-num">06</div>
+          <div class="service-title">Lancez une procédure disciplinaire pour violation d'obligation de loyauté</div>
+          <p class="service-desc">Votre salarié a violé son obligation de loyauté. Avosarrets vous guide sur la procédure pouvant aller jusqu'au licenciement. <em>(*recours à un avocat recommandé)</em></p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-num">07</div>
+          <div class="service-title">Lancez un licenciement du fait de la perturbation du fonctionnement de l'entreprise</div>
+          <p class="service-desc">L'absence répétée ou prolongée perturbe le fonctionnement. Avosarrets vous guide pour envisager son licenciement afin de le remplacer. <em>(*recours à un avocat recommandé)</em></p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-num">08</div>
+          <div class="service-title">Défendez-vous en cas d'action devant le CPH</div>
+          <p class="service-desc">Analyse et défense d'un avocat dédié. <em>(recours à un avocat obligatoire)</em></p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-num">09</div>
+          <div class="service-title">Anticipez la gestion des arrêts de travail</div>
+          <p class="service-desc">Vous souhaitez mettre en œuvre une politique de prévention et votre DUERP. Avosarrets vous propose un certain nombre de process.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════ FEATURE SCREEN ════════════ -->
+  <section class="feature-section">
+    <div class="container">
+      <h2 class="section-title">Vos échanges avec l'URSSAF en une seule plateforme</h2>
+      <p class="section-sub">Une interface claire et centralisée pour suivre, agir et documenter chaque arrêt-maladie.</p>
+      <div class="feature-screen-img">
+        <img src="https://cdn.prod.website-files.com/683db8eb3b6e2b3c068f80e8/683ef1f5c1464f88444a93bf_Feature%20screen.png" alt="Interface Avosarrets" style="width:100%;" />
+      </div>
+      <div class="feature-bullets">
+        <div class="feature-bullet">
+          <div class="feature-bullet-icon"></div>
+          <p class="feature-bullet-text"><strong>Informations URSSAF simplifiées</strong> — accédez à toutes les données pertinentes depuis un seul espace.</p>
+        </div>
+        <div class="feature-bullet">
+          <div class="feature-bullet-icon"></div>
+          <p class="feature-bullet-text"><strong>Suivi guidé des procédures</strong> avec génération automatique des documents nécessaires à chaque étape.</p>
+        </div>
+        <div class="feature-bullet">
+          <div class="feature-bullet-icon"></div>
+          <p class="feature-bullet-text"><strong>Signature électronique</strong> intégrée pour valider et envoyer vos courriers sans quitter la plateforme.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════ PRICING ════════════ -->
+  <section id="pricing" class="section section-light">
+    <div class="container">
+      <h2 class="section-title">Nos formules</h2>
+      <p class="section-sub">Choisissez la formule adaptée à votre situation.</p>
+      <div class="pricing-grid">
+
+        <!-- Sérénité -->
+        <div class="plan-card">
+          <div class="plan-name">Sérénité</div>
+          <div class="plan-tagline">Pour être rassuré et épaulé</div>
+          <div class="plan-price">$599</div>
+          <div class="plan-period">/mo</div>
+          <div class="plan-divider"></div>
+          <ul class="plan-features">
+            <li>
+              <img class="plan-check" src="https://cdn.prod.website-files.com/683db8eb3b6e2b3c068f80e8/685814879cda69b64ed65b35_checkmark-svgrepo-com.svg" alt="✓" />
+              Base juridique IA
+            </li>
+            <li>
+              <img class="plan-check" src="https://cdn.prod.website-files.com/683db8eb3b6e2b3c068f80e8/685814879cda69b64ed65b35_checkmark-svgrepo-com.svg" alt="✓" />
+              Rédaction automatisée
+            </li>
+            <li>
+              <img class="plan-check" src="https://cdn.prod.website-files.com/683db8eb3b6e2b3c068f80e8/685814879cda69b64ed65b35_checkmark-svgrepo-com.svg" alt="✓" />
+              Outil de suivi et calendrier
+            </li>
+            <li>
+              <img class="plan-check" src="https://cdn.prod.website-files.com/683db8eb3b6e2b3c068f80e8/685814879cda69b64ed65b35_checkmark-svgrepo-com.svg" alt="✓" />
+              📞 Hotline juridique incluse
+            </li>
+            <li>
+              <img class="plan-check" src="https://cdn.prod.website-files.com/683db8eb3b6e2b3c068f80e8/685814879cda69b64ed65b35_checkmark-svgrepo-com.svg" alt="✓" />
+              ⚖️ Possibilité de mobiliser un avocat en cas de besoin à tous les stades
+            </li>
+          </ul>
+          <a href="#contact" class="btn-plan btn-plan-outline">Choisir Sérénité</a>
+        </div>
+
+        <!-- Expert -->
+        <div class="plan-card featured">
+          <div class="plan-badge">Recommandée</div>
+          <div class="plan-name">Expert</div>
+          <div class="plan-tagline">Pour les cas sensibles, complexes ou à fort enjeu financier</div>
+          <div class="plan-price">$1 499</div>
+          <div class="plan-period">À partir de /mo</div>
+          <div class="plan-divider"></div>
+          <ul class="plan-features">
+            <li>
+              <img class="plan-check" src="https://cdn.prod.website-files.com/683db8eb3b6e2b3c068f80e8/685814879cda69b64ed65b35_checkmark-svgrepo-com.svg" alt="✓" style="filter: brightness(10);" />
+              Avocat dédié dès le départ qui conduit le dossier et adapte la stratégie
+            </li>
+            <li>
+              <img class="plan-check" src="https://cdn.prod.website-files.com/683db8eb3b6e2b3c068f80e8/685814879cda69b64ed65b35_checkmark-svgrepo-com.svg" alt="✓" style="filter: brightness(10);" />
+              Base juridique IA
+            </li>
+            <li>
+              <img class="plan-check" src="https://cdn.prod.website-files.com/683db8eb3b6e2b3c068f80e8/685814879cda69b64ed65b35_checkmark-svgrepo-com.svg" alt="✓" style="filter: brightness(10);" />
+              Rédaction automatisée
+            </li>
+            <li>
+              <img class="plan-check" src="https://cdn.prod.website-files.com/683db8eb3b6e2b3c068f80e8/685814879cda69b64ed65b35_checkmark-svgrepo-com.svg" alt="✓" style="filter: brightness(10);" />
+              Outil de suivi et calendrier
+            </li>
+            <li>
+              <img class="plan-check" src="https://cdn.prod.website-files.com/683db8eb3b6e2b3c068f80e8/685814879cda69b64ed65b35_checkmark-svgrepo-com.svg" alt="✓" style="filter: brightness(10);" />
+              📞 Hotline juridique incluse
+            </li>
+            <li>
+              <img class="plan-check" src="https://cdn.prod.website-files.com/683db8eb3b6e2b3c068f80e8/685814879cda69b64ed65b35_checkmark-svgrepo-com.svg" alt="✓" style="filter: brightness(10);" />
+              ⚖️ Mobilisation d'un avocat tout le long de la procédure
+            </li>
+          </ul>
+          <a href="#contact" class="btn-plan btn-plan-solid">Choisir Expert</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════ FONDATRICE ════════════ -->
+  <section class="section">
+    <div class="container">
+      <div class="founder-wrap">
+        <div class="founder-avatar">
+          <img src="https://cdn.prod.website-files.com/62434fa732124a0fb112aab4/62434fa732124a28a812aad9_placeholder%202.svg" alt="Me Vanessa Bohbot Sebban" />
+        </div>
+        <div>
+          <div class="founder-name">Me Vanessa Bohbot Sebban</div>
+          <div class="founder-title">Avocate depuis 2001 · Co-fondatrice</div>
+          <p class="founder-bio">
+            Spécialisée en droit du travail et sécurité sociale, Me Vanessa Bohbot Sebban est co-fondatrice d'une première legaltech (avostages.com) et enseigne à l'EFB (École de Formation du Barreau de Paris et sa région). Elle a conçu Avosarrets pour offrir aux employeurs un accompagnement juridique accessible, fiable et à la hauteur des enjeux de l'absentéisme en entreprise.
+          </p>
+          <div class="founder-tags">
+            <span class="founder-tag">Droit du travail</span>
+            <span class="founder-tag">Sécurité sociale</span>
+            <span class="founder-tag">Legaltech</span>
+            <span class="founder-tag">Enseignante EFB</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════ FAQ ════════════ -->
+  <section id="faq" class="section section-light">
+    <div class="container">
+      <h2 class="section-title">FAQ</h2>
+      <p class="section-sub">Tout ce que vous devez savoir sur les arrêts-maladie et vos droits en tant qu'employeur.</p>
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-trigger">
+            <span>Qui prescrit un arrêt de travail ?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Un arrêt de travail peut être prescrit par tout médecin : le médecin traitant, un médecin spécialiste, un médecin urgentiste ou un médecin de garde. Depuis la crise sanitaire, les arrêts de travail peuvent également être délivrés par téléconsultation sous certaines conditions.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger">
+            <span>Est-ce qu'un arrêt de travail obtenu en visio est valable ?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Oui, sous conditions. Un arrêt de travail obtenu lors d'une téléconsultation est valable si le médecin est le médecin traitant déclaré du salarié, ou si le patient l'a déjà rencontré en consultation physique au cours des 12 derniers mois. Dans le cas contraire, cet arrêt peut être contestable.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger">
+            <span>Quelles sont les obligations de mon salarié en arrêt maladie ?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Le salarié en arrêt maladie est tenu de : respecter les heures de sortie autorisées (ou rester à domicile si aucune sortie n'est autorisée), transmettre son arrêt à la CPAM dans les 48h, informer son employeur, ne pas exercer d'activité professionnelle non autorisée, et se soumettre aux contre-visites médicales organisées par l'employeur.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger">
+            <span>Dois-je le payer ?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Cela dépend de l'ancienneté du salarié et de votre convention collective. La loi prévoit un maintien de salaire sous conditions d'ancienneté (au moins un an). La CPAM verse des indemnités journalières de sécurité sociale (IJSS), et vous complétez si votre obligation légale ou conventionnelle l'impose. Certaines conventions collectives prévoient un maintien intégral dès le premier jour d'absence.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger">
+            <span>Puis-je le contacter et lui demander les éléments nécessaires à la poursuite de l'activité ?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Oui, mais avec discernement. Vous pouvez contacter un salarié en arrêt maladie pour récupérer des éléments strictement indispensables à la continuité du service (mots de passe, fichiers critiques, transmission d'un dossier urgent). En revanche, vous ne pouvez pas lui demander d'effectuer des tâches professionnelles ni perturber son repos et sa guérison.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger">
+            <span>Ai-je le droit de me séparer d'un salarié en arrêt-maladie ?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              En principe, non. Le licenciement d'un salarié en arrêt maladie ordinaire est interdit si la raison du licenciement est liée à la maladie. Cependant, il existe des exceptions : faute grave ou lourde du salarié commise pendant l'arrêt, impossibilité de maintenir le contrat pour un motif étranger à la maladie, ou perturbation grave du fonctionnement de l'entreprise nécessitant un remplacement définitif (sous conditions strictes).
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger">
+            <span>Comment puis-je le remplacer ?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Vous pouvez recourir au CDD de remplacement, à l'intérim, ou à un prestataire externe pendant l'absence de votre salarié. Si l'absence se prolonge et perturbe gravement le fonctionnement de l'entreprise, vous pouvez, sous certaines conditions, envisager son remplacement définitif, ce qui peut ouvrir la voie à un licenciement pour perturbation.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger">
+            <span>Quelles sont mes obligations vis-à-vis de la CPAM ?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Vous devez notamment : procéder à la subrogation si vous maintenez le salaire (afin de percevoir les IJSS en lieu et place du salarié), établir une attestation de salaire pour permettre le calcul des indemnités journalières, et organiser la visite de reprise au retour du salarié après certains types d'absences. Vous pouvez également signaler à la CPAM un arrêt que vous estimez injustifié.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger">
+            <span>Qu'est-ce qu'une garantie d'emploi ?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              La garantie d'emploi est la protection dont bénéficie un salarié pendant son arrêt maladie : l'employeur ne peut pas le licencier en raison de sa maladie ou de son absence. Sa durée varie selon la convention collective applicable. Cette protection peut être suspendue en cas de faute grave du salarié ou dans certaines situations exceptionnelles prévues par la loi.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger">
+            <span>Puis-je contester un arrêt maladie ?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Oui. Vous pouvez contester un arrêt maladie de deux façons : en organisant une contre-visite médicale (un médecin mandaté par vous examine le salarié à son domicile), ou en signalant l'arrêt à la CPAM qui peut diligenter un contrôle médical de son côté. Si la contre-visite conclut à l'absence de justification médicale, vous pouvez suspendre le complément de salaire que vous versez.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger">
+            <span>Puis-je contrôler un arrêt maladie ?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Oui, c'est votre droit. Vous pouvez organiser une contre-visite médicale à tout moment pendant l'arrêt. Le médecin mandaté se rend au domicile du salarié ou à l'adresse mentionnée sur l'arrêt. Si le salarié est absent à des heures non autorisées ou si l'état de santé ne justifie pas l'arrêt, vous pouvez prendre des mesures. Avosarrets vous accompagne dans cette démarche.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger">
+            <span>Quelle est la différence avec un accident du travail ? un accident de trajet ? une maladie professionnelle ?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Ces situations ouvrent des droits spécifiques et des protections renforcées pour le salarié. En cas d'accident du travail ou de trajet, vous devez faire une déclaration à la CPAM dans les 48h. L'indemnisation est majorée et la protection contre le licenciement est beaucoup plus forte. La maladie professionnelle nécessite une procédure de reconnaissance spécifique. Dans tous ces cas, les obligations de l'employeur sont plus contraignantes qu'en cas de maladie ordinaire.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════ CONTACT / CTA ════════════ -->
+  <section id="contact" class="section">
+    <div class="container">
+      <div style="max-width:560px; margin:0 auto; text-align:center;">
+        <h2 class="section-title" style="margin-bottom:12px;">Demandez votre diagnostic</h2>
+        <p class="section-sub" style="margin-bottom:40px;">Notre équipe analyse votre situation et revient vers vous rapidement avec des recommandations personnalisées.</p>
+      </div>
+      <form style="max-width:480px; margin:0 auto; display:flex; flex-direction:column; gap:16px;">
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:var(--text); margin-bottom:6px;">Nom de l'entreprise</label>
+          <input type="text" placeholder="Votre entreprise" style="width:100%; border:1px solid var(--border); border-radius:8px; padding:12px 14px; font-size:14px; font-family:inherit; outline:none; transition:border-color .15s;" onfocus="this.style.borderColor='#0071CE'" onblur="this.style.borderColor='#E5E7EB'" />
+        </div>
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:var(--text); margin-bottom:6px;">Email professionnel</label>
+          <input type="email" placeholder="vous@entreprise.fr" style="width:100%; border:1px solid var(--border); border-radius:8px; padding:12px 14px; font-size:14px; font-family:inherit; outline:none; transition:border-color .15s;" onfocus="this.style.borderColor='#0071CE'" onblur="this.style.borderColor='#E5E7EB'" />
+        </div>
+        <div>
+          <label style="display:block; font-size:13px; font-weight:600; color:var(--text); margin-bottom:6px;">Téléphone</label>
+          <input type="tel" placeholder="+33 6 00 00 00 00" style="width:100%; border:1px solid var(--border); border-radius:8px; padding:12px 14px; font-size:14px; font-family:inherit; outline:none; transition:border-color .15s;" onfocus="this.style.borderColor='#0071CE'" onblur="this.style.borderColor='#E5E7EB'" />
+        </div>
+        <button type="submit" class="btn-primary" style="justify-content:center; margin-top:4px;">
+          Demander un diagnostic
+          <img src="https://cdn.prod.website-files.com/683db8eb3b6e2b3c068f80e8/683dc5380f181c93acd2b119_Chevron-right.svg" alt="→" />
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ════════════ FOOTER ════════════ -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <img src="logo.svg" alt="Avosarrets" class="footer-logo" />
+          <p class="footer-desc">La première solution numérique tout en un conçue par des avocats pour gérer les arrêts-maladie et faire face à l'absentéisme.</p>
+        </div>
+        <div>
+          <div class="footer-col-title">Company</div>
+          <ul class="footer-col-links">
+            <li><a href="#comment-ca-marche">Comment ça marche</a></li>
+            <li><a href="#services">Nos services</a></li>
+            <li><a href="#pricing">Nos formules</a></li>
+            <li><a href="#faq">FAQ</a></li>
+            <li><a href="#contact">Nous contacter</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">About</div>
+          <ul class="footer-col-links">
+            <li><a href="#">Terms &amp; Conditions</a></li>
+            <li><a href="#">Privacy policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2021 Avosarrets. Tous droits réservés.</span>
+        <a href="https://www.linkedin.com" target="_blank" class="footer-linkedin">
+          <img src="https://cdn.prod.website-files.com/62434fa732124a0fb112aab4/62434fa732124a389912aad8_linkedin%20small.svg" alt="LinkedIn" />
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // FAQ accordion
+    document.querySelectorAll('.faq-trigger').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var item = btn.closest('.faq-item');
+        var answer = item.querySelector('.faq-answer');
+        var icon = btn.querySelector('.faq-icon');
+        var isOpen = item.classList.contains('open');
+
+        // Close all
+        document.querySelectorAll('.faq-item').forEach(function(i) {
+          i.classList.remove('open');
+          i.querySelector('.faq-answer').style.maxHeight = '0';
+        });
+
+        // Open clicked if it was closed
+        if (!isOpen) {
+          item.classList.add('open');
+          answer.style.maxHeight = answer.scrollHeight + 'px';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
